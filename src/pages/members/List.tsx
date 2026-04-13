@@ -26,7 +26,8 @@ import { getDaysRemaining } from '../../utils/getDaysRemaining';
 import { formatDate } from '../../utils/formatDate';
 import type { Member } from '../../types/Member';
 import type { Plan } from '../../types/Plan';
-
+import { DeleteOutlined } from '@ant-design/icons';
+import { Popconfirm, message } from 'antd';
 const { Title } = Typography;
 const { Search } = Input;
 
@@ -95,7 +96,16 @@ export default function MemberList() {
       ),
     },
   ];
-
+  const handleDelete = async (id: number) => {
+  try {
+    await membersApi.delete(id);
+    message.success('Member deleted successfully');
+    refetch(); // refresh table
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    message.error('Failed to delete member');
+  }
+};
   const fullColumns: ColumnsType<Member> = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 60 },
     {
@@ -142,19 +152,40 @@ export default function MemberList() {
       align: 'center',
     },
     {
-      title: 'Actions',
-      key: 'actions',
-      width: 80,
-      render: (_: unknown, record: Member) => (
-        <Button
-          type="link"
-          icon={<EyeOutlined />}
-          onClick={() => navigate(`/members/${record.id}`)}
+  title: 'Actions',
+  key: 'actions',
+  width: 150,
+  render: (_: unknown, record: Member) => (
+    <>
+      {/* View */}
+      <Button
+        type="link"
+        icon={<EyeOutlined />}
+        onClick={() => navigate(`/members/${record.id}`)}
+      >
+        View
+      </Button>
+
+      {/* Delete (ADMIN only) */}
+      {role === UserRole.ADMIN && (
+        <Popconfirm
+          title="Are you sure to delete this member?"
+          onConfirm={() => handleDelete(record.id)}
+          okText="Yes"
+          cancelText="No"
         >
-          View
-        </Button>
-      ),
-    },
+          <Button
+            type="link"
+            danger
+            icon={<DeleteOutlined />}
+          >
+            Delete
+          </Button>
+        </Popconfirm>
+      )}
+    </>
+  ),
+}
   ];
 
   if (isError) {

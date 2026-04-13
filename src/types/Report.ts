@@ -1,15 +1,15 @@
 export interface DailySummary {
   date: string;
-  totalCheckIns: number;
+  total_checkins: number;
   sessions: { status: string; count: number }[];
-  newMemberships: number;
+  new_memberships: number;
   renewals: number;
-  totalRevenue: number;
+  total_revenue: number;
   breakdown: {
-    ptRevenue: number;
-    membershipRevenue: number;
+    pt_revenue: number;
+    membership_revenue: number;
   };
-  peakHours: { hour: number; count: number }[];
+  peak_hours: { hour: number; count: number }[];
 }
 
 export interface MembershipStatusReport {

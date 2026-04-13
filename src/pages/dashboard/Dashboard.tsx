@@ -9,6 +9,7 @@ import {
   Result,
   Table,
   Tag,
+  DatePicker,
 } from 'antd';
 import {
   TeamOutlined,
@@ -23,16 +24,20 @@ import { useAuthStore } from '../../stores/useAuthStore';
 import { UserRole } from '../../types/enums';
 import { formatCurrency } from '../../utils/formatCurrency';
 import type { DailySummary } from '../../types/Report';
+import dayjs from 'dayjs';
+import { useState } from 'react';
+import 'antd/dist/reset.css';
 
 const { Title } = Typography;
 
 export default function Dashboard() {
   const role = useAuthStore((state) => state.role);
   const user = useAuthStore((state) => state.user);
-
+  const [date, setDate] = useState(dayjs());
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['daily-summary'],
-    queryFn: () => reportsApi.getDailySummary(),
+    queryKey: ['daily-summary',date],
+    queryFn: () => reportsApi.getDailySummary(date.format('YYYY-MM-DD')),
+    select: (res) => res.data.data[0],
     enabled: role === UserRole.ADMIN,
   });
 
@@ -40,6 +45,7 @@ export default function Dashboard() {
     return (
       <div>
         <Title level={3}>Welcome, {user?.name}!</Title>
+        
         <Card>
           <Result
             icon={<TeamOutlined />}
@@ -73,7 +79,7 @@ export default function Dashboard() {
     );
   }
 
-  const summary: DailySummary | undefined = data?.data?.data;
+  const summary: DailySummary | undefined = data;
 
   const sessionColumns: ColumnsType<{ status: string; count: number }> = [
     { title: 'Status', dataIndex: 'status', key: 'status', render: (s: string) => <Tag>{s}</Tag> },
@@ -92,13 +98,22 @@ export default function Dashboard() {
 
   return (
     <div>
-      <Title level={3}>Dashboard — {summary?.date ?? 'Today'}</Title>
+      <Title level={3}>Dashboard — {date.format('YYYY-MM-DD')}</Title>
+
+        <div style={{ marginBottom: 16 }}>
+        <DatePicker
+          value={date}
+          onChange={(d) => {
+            if (d) setDate(d);
+          }}
+        />
+      </div>
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
               title="Check-ins Today"
-              value={summary?.totalCheckIns ?? 0}
+              value={summary?.total_checkins ?? 0}
               prefix={<CalendarOutlined />}
             />
           </Card>
@@ -107,7 +122,7 @@ export default function Dashboard() {
           <Card>
             <Statistic
               title="New Memberships"
-              value={summary?.newMemberships ?? 0}
+              value={summary?.new_memberships ?? 0}
               prefix={<UserAddOutlined />}
             />
           </Card>
@@ -125,7 +140,7 @@ export default function Dashboard() {
           <Card>
             <Statistic
               title="Total Revenue"
-              value={summary?.totalRevenue ?? 0}
+              value={summary?.total_revenue ?? 0}
               prefix={<DollarOutlined />}
               formatter={(val) => formatCurrency(Number(val))}
             />
@@ -138,12 +153,12 @@ export default function Dashboard() {
           <Card title="Revenue Breakdown">
             <Statistic
               title="Membership Revenue"
-              value={summary?.breakdown?.membershipRevenue ?? 0}
+              value={summary?.breakdown?.membership_revenue ?? 0}
               formatter={(val) => formatCurrency(Number(val))}
             />
             <Statistic
               title="PT Revenue"
-              value={summary?.breakdown?.ptRevenue ?? 0}
+              value={summary?.breakdown?.pt_revenue ?? 0}
               formatter={(val) => formatCurrency(Number(val))}
               style={{ marginTop: 16 }}
             />
@@ -164,7 +179,7 @@ export default function Dashboard() {
           <Card title="Peak Hours">
             <Table
               columns={peakColumns}
-              dataSource={summary?.peakHours ?? []}
+              dataSource={summary?.peak_hours ?? []}
               pagination={false}
               rowKey="hour"
               size="small"
