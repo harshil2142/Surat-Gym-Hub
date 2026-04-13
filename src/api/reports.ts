@@ -2,9 +2,9 @@ import apiClient from "./axios";
 import type { ApiResponse } from "../types/ApiResponse";
 import type {
   DailySummary,
-  MembershipStatusReport,
-  TrainerUtilisation,
-  RevenueReport,
+  MembershipExpiryRow,
+  TrainerUtilisationRow,
+  RevenueAnalysisRow,
 } from "../types/Report";
 
 export const reportsApi = {
@@ -15,24 +15,21 @@ export const reportsApi = {
     });
   },
 
-  getMembershipStatus() {
-    return apiClient.get<ApiResponse<MembershipStatusReport>>(
-      "/reports/membership-status",
+  getMembershipExpiry() {
+    return apiClient.get<ApiResponse<MembershipExpiryRow[]>>(
+      "/reports/membership-expiry",
     );
   },
 
-  getTrainerUtilisation(startDate: string, endDate: string) {
-    return apiClient.get<ApiResponse<TrainerUtilisation[]>>(
+  getTrainerUtilisation() {
+    return apiClient.get<ApiResponse<TrainerUtilisationRow[]>>(
       "/reports/trainer-utilisation",
-      {
-        params: { startDate, endDate },
-      },
     );
   },
 
-  getRevenue(startDate: string, endDate: string) {
-    return apiClient.get<ApiResponse<RevenueReport>>("/reports/revenue", {
-      params: { startDate, endDate },
-    });
+  getRevenueAnalysis() {
+    return apiClient.get<ApiResponse<RevenueAnalysisRow[]>>(
+      "/reports/revenue-analysis",
+    );
   },
 };

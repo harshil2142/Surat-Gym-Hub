@@ -197,9 +197,17 @@ export default function Plans() {
           <Form.Item
             name="durationMonths"
             label="Duration (months)"
-            rules={[{ required: true }, { type: 'number', min: 1 }]}
+            rules={[{ required: true, message: 'Please select duration' }]}
           >
-            <InputNumber min={1} style={{ width: '100%' }} />
+            <Select
+              placeholder="Select duration"
+              options={[
+                { label: '1 Month', value: 1 },
+                { label: '3 Months', value: 3 },
+                { label: '6 Months', value: 6 },
+                { label: '12 Months', value: 12 },
+              ]}
+            />
           </Form.Item>
           <Form.Item
             name="price"
@@ -209,7 +217,15 @@ export default function Plans() {
             <InputNumber min={0} step={100} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item name="ptSessions" label="PT Sessions Included">
-            <InputNumber min={0} style={{ width: '100%' }} />
+            <Select
+              placeholder="Select PT sessions"
+              options={[
+                { label: '0', value: 0 },
+                { label: '4', value: 4 },
+                { label: '8', value: 8 },
+                { label: '12', value: 12 },
+              ]}
+            />
           </Form.Item>
           <Form.Item name="accessHours" label="Access Hours">
             <Select
