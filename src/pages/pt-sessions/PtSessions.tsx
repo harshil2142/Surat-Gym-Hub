@@ -145,6 +145,13 @@ export default function PtSessions() {
   });
 
   const columns: ColumnsType<PtSession> = [
+    { 
+      title: '#', 
+      key: 'index', 
+      width: 60, 
+      render: (_text: unknown, _record: PtSession, index: number) => 
+        (pagination?.page ?? 1) > 0 ? ((pagination?.page ?? 1) - 1) * (pagination?.limit ?? 20) + index + 1 : index + 1
+    },
     { title: 'Code', dataIndex: 'session_code', key: 'session_code', width: 120 },
     { title: 'Member', dataIndex: 'member_name', key: 'member_name' },
     { title: 'Trainer', dataIndex: 'trainer_name', key: 'trainer_name' },
