@@ -72,6 +72,7 @@ export default function PtSessions() {
   const { data: trainersData } = useQuery({
     queryKey: ['trainers'],
     queryFn: () => trainersApi.getAll(),
+    enabled: canBook,
   });
 
   const { data: membersData } = useQuery({
