@@ -18,8 +18,9 @@ import {
   message,
   Row,
   Col,
+  Drawer,
 } from 'antd';
-import { PlusOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, ReloadOutlined, CalendarOutlined } from '@ant-design/icons';
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import type { ColumnsType } from 'antd/es/table';
@@ -30,11 +31,14 @@ import type { Trainer, CreateTrainerRequest, UpdateTrainerRequest } from '../../
 import type { ApiErrorResponse } from '../../types/ApiResponse';
 
 const { Title } = Typography;
+import SlotManager from './components/SlotManager';
 
 export default function Trainers() {
   const queryClient = useQueryClient();
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editingTrainer, setEditingTrainer] = useState<Trainer | null>(null);
+  const [slotsDrawerTrainer, setSlotsDrawerTrainer] = useState<Trainer | null>(null);
+
   const [createForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
@@ -137,6 +141,9 @@ export default function Trainers() {
       key: 'actions',
       render: (_: unknown, record: Trainer) => (
         <Space>
+          <Button type="link" icon={<CalendarOutlined />} onClick={() => setSlotsDrawerTrainer(record)}>
+            Slots
+          </Button>
           <Button type="link" onClick={() => openEdit(record)}>
             Edit
           </Button>
@@ -335,6 +342,20 @@ export default function Trainers() {
           </Row>
         </Form>
       </Modal>
+
+      {/* Slots Drawer */}
+      <Drawer
+        title={`Manage Slots: ${slotsDrawerTrainer?.name}`}
+        placement="right"
+        width={600}
+        onClose={() => setSlotsDrawerTrainer(null)}
+        open={!!slotsDrawerTrainer}
+        destroyOnClose
+      >
+        {slotsDrawerTrainer && (
+          <SlotManager trainerId={slotsDrawerTrainer.id} />
+        )}
+      </Drawer>
     </div>
   );
 }

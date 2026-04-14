@@ -16,10 +16,11 @@ import {
   UserOutlined,
   CalendarOutlined,
   CheckCircleOutlined,
-  BarChartOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  ScheduleOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { useAuth } from '../hooks/useAuth';
@@ -65,6 +66,14 @@ function getMenuItems(role: UserRole | null): MenuItem[] {
       key: '/trainers',
       icon: <UserOutlined />,
       label: 'Trainers',
+    });
+  }
+
+  if (role === UserRole.TRAINER) {
+    items.push({
+      key: '/my-slots',
+      icon: <ScheduleOutlined />,
+      label: 'My Slots',
     });
   }
 

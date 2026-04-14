@@ -12,6 +12,7 @@ import MemberForm from './pages/members/Form';
 import MemberDetail from './pages/members/Detail';
 import Plans from './pages/plans/Plans';
 import Trainers from './pages/trainers/Trainers';
+import MySlots from './pages/trainers/MySlots';
 import PtSessions from './pages/pt-sessions/PtSessions';
 import Attendance from './pages/attendance/Attendance';
 import Reports from './pages/reports/Reports';
@@ -68,6 +69,11 @@ export default function App() {
                   {/* Trainers — Admin only */}
                   <Route element={<RoleRoute roles={[UserRole.ADMIN]} />}>
                     <Route path="/trainers" element={<Trainers />} />
+                  </Route>
+
+                  {/* My Slots — Trainer only */}
+                  <Route element={<RoleRoute roles={[UserRole.TRAINER]} />}>
+                    <Route path="/my-slots" element={<MySlots />} />
                   </Route>
 
                   {/* PT Sessions — all roles */}
