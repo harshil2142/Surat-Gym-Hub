@@ -68,7 +68,17 @@ export default function Login() {
             <Form.Item
               name="password"
               label="Password"
-              rules={[{ required: true, message: 'Please enter your password' }]}
+              rules={[
+                { required: true, message: 'Please enter your password' },
+                {
+                  validator: (_, value) => {
+                    if (value && /\p{Extended_Pictographic}/u.test(value)) {
+                      return Promise.reject(new Error('Password cannot contain emojis'));
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}
             >
               <Input.Password
                 prefix={<LockOutlined />}

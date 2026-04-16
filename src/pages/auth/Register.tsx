@@ -104,6 +104,14 @@ export default function Register() {
               rules={[
                 { required: true, message: 'Password is required' },
                 { min: 6, message: 'Password must be at least 6 characters' },
+                {
+                  validator: (_, value) => {
+                    if (value && /\p{Extended_Pictographic}/u.test(value)) {
+                      return Promise.reject(new Error('Password cannot contain emojis'));
+                    }
+                    return Promise.resolve();
+                  },
+                },
               ]}
             >
               <Input.Password

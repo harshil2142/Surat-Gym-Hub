@@ -228,7 +228,22 @@ export default function Trainers() {
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item name="password" label="Password" rules={[{ required: true, min: 6 }]}>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[
+              { required: true, message: 'Password is required' },
+              { min: 6, message: 'Password must be at least 6 characters' },
+              {
+                validator: (_, value) => {
+                  if (value && /\p{Extended_Pictographic}/u.test(value)) {
+                    return Promise.reject(new Error('Password cannot contain emojis'));
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
             <Input.Password />
           </Form.Item>
           <Row gutter={16}>
